@@ -11,4 +11,41 @@
 **التصميم والتوزيع:**
 *   **الفرضية:** تقديم تجربة مجانية يشجع الزوار على تجربة الخدمة ويقلل حاجز التردد، مما يزيد احتمال الاشتراك الفعلي.
 *   **وحدة العشوأة:** المستخدم (User ID أو الكوكيز) لضمان استقرار الواجهة.
+### حجم العينة والمدة (تصميم التجربة)
+بناءً على أهداف التجربة، تم تحديد المعطيات التالية:
+* **معدل التحويل الحالي (Baseline):** 5% من زوار صفحة الأسعار يشتركون حالياً.
+* **معدل التحويل المستهدف (Target):** 6% (زيادة قدرها 1% كنقطة مئوية).
+* **متوسط الزيارات اليومية:** 2,000 زائر لصفحة الأسعار.
 
+**النتيجة بناءً على الحسابات الإحصائية:**
+* **حجم العينة المطلوب:** تقريباً 8,150 مستخدم لكل مجموعة (للمجموعة الضابطة ومجموعة العلاج).
+* **مدة التجربة:** 14 يوماً (أسبوعين كاملين) لجمع عينة كافية وتحقيق دلالة إحصائية (Statistical Significance).
+### المنهجية البرمجية لحساب حجم العينة (Python)
+تم استخدام المعادلات الإحصائية التالية لحساب حجم العينة والمدة المطلوبة للتجربة:
+
+```python
+import numpy as np
+from scipy import stats
+
+def n_per_group_proportions(p_control, p_treatment, alpha=0.05, power=0.80):
+    """حساب حجم العينة المطلوبة لكل مجموعة بناءً على مستوى الدلالة والقوة الإحصائية"""
+    z_a, z_b = stats.norm.ppf(1 - alpha / 2), stats.norm.ppf(power)
+    var = p_control * (1 - p_control) + p_treatment * (1 - p_treatment)
+    return int(np.ceil((z_a + z_b) ** 2 * var / (p_treatment - p_control) ** 2))
+
+def duration_days(n_per_group, daily_new_users, groups=2):
+    """حساب مدة التجربة وتقريبها لأسابيع كاملة"""
+    days = int(np.ceil(n_per_group * groups / daily_new_users))
+    return int(np.ceil(days / 7) * 7) 
+
+# معطيات المشروع الافتراضية
+p_control = 0.05
+p_treatment = 0.06
+daily_new_users = 2000
+
+# تنفيذ الحسابات
+n = n_per_group_proportions(p_control, p_treatment)
+days = duration_days(n, daily_new_users)
+
+print(f"Sample Size per group: {n:,}")
+print(f"Duration: {days} days")
