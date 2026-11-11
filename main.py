@@ -67,6 +67,16 @@ data['cancelled'] = np.where(
 data.to_csv('data/dataset.csv', index=False)
 print("تم حفظ بيانات المحاكاة في 'data/dataset.csv'")
 
+# 3.5 فحوص جودة البيانات
+print("\n--- فحوص جودة البيانات ---")
+missing = int(data.isna().sum().sum())
+duplicates = int(data['user_id'].duplicated().sum())
+print(f"القيم المفقودة: {missing}")
+print(f"سجلات مكررة (user_id): {duplicates}")
+print(f"عدد السجلات: {len(data):,} (المتوقع: {total_users_actual:,})")
+assert missing == 0 and duplicates == 0 and len(data) == total_users_actual, "فشل فحص جودة البيانات"
+print("النتيجة: البيانات مكتملة وبدون تكرار.")
+
 # 4. فحص جودة التوزيع (SRM)
 counts = data['group'].value_counts()
 n_A, n_B = counts['A'], counts['B']
