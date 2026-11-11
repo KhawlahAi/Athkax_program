@@ -48,4 +48,4 @@
 
 ## عن البرنامج
 نُفّذ هذا المشروع ضمن برنامج «التجارب واختبارات A/B والاستدلال السببي» في أكاديمية سدايا، نوفمبر 2026.
-حساب أكاديمية سدايا على GitHub: https://github.com/SDAIAAcademy https://github.com/SDAIAAcademy
+حساب أكاديمية سدايا على GitHub: https://github.com/SDAIAAcademy
