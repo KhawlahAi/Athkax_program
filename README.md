@@ -1,97 +1,97 @@
-# المشروع الختامي: اختبار A/B لتأثير التجربة المجانية
+# Capstone Project: A/B Test on the Impact of a Free Trial
 
 
-## الوصف
-تحليل أثر إضافة خيار "تجربة مجانية لمدة 7 أيام" في صفحة الأسعار لمنتج رقمي (بيانات محاكاة). تهدف التجربة إلى قياس ما إذا كان هذا الخيار يقلل حاجز التردد لدى الزوار ويرفع نسبة التحول إلى اشتراكات مدفوعة، دون الإضرار بمتوسط الإيراد لكل مستخدم أو رفع نسبة الإلغاء.
+## Description
+Analysis of the impact of adding a "7-Day Free Trial" option on the pricing page of a digital product (simulated data). The experiment aims to measure whether this option reduces visitor hesitation and increases the conversion rate to paid subscriptions, without harming Average Revenue Per User (ARPU) or increasing the cancellation rate.
 
-## السؤال والفرضية
-**السؤال:** هل تؤدي إضافة خيار التجربة المجانية لمدة 7 أيام إلى زيادة نسبة الاشتراكات المدفوعة؟
+## Question and Hypothesis
+**Question:** Does adding a 7-day free trial option increase the rate of paid subscriptions?
 
-**القرار المطلوب:** إطلاق الخيار لجميع خطط الاشتراك أو عدم إطلاقه.
+**Decision Required:** Launch the option for all subscription plans or do not launch it.
 
-**المعالجة:** إظهار خيار "تجربة مجانية لمدة 7 أيام" في صفحة الأسعار.
+**Treatment:** Displaying the "7-Day Free Trial" option on the pricing page.
 
-**الفرضية:** إذا أُضيف خيار التجربة المجانية، فسترتفع نسبة الاشتراكات المدفوعة (أثر إيجابي متوقع)، لأن التجربة المجانية تقلل التردد المالي المبدئي وتشجع الزوار على استخدام الخدمة.
+**Hypothesis:** If the free trial option is added, the paid subscription rate will increase (expected positive effect), because the free trial reduces initial financial hesitation and encourages visitors to use the service.
 
-**ما الذي يجعلنا نغير رأينا:** نتراجع عن الإطلاق إذا ارتفعت نسبة الإلغاء بدلالة إحصائية، أو انخفض الإيراد لكل مستخدم بدلالة إحصائية.
+**What would change our minds:** We will refrain from launching if the cancellation rate increases with statistical significance, or if revenue per user decreases with statistical significance.
 
-## التصميم
-- **المجتمع المستهدف:** زوار صفحة الأسعار.
-- **وحدة العشوائية:** المستخدم (User ID أو الكوكيز).
-- **المجموعتان:** A (مقارنة، بدون تجربة مجانية) و B (معالجة، مع التجربة المجانية).
-- **نسبة التوزيع وطريقة التنفيذ:** 50/50؛ يُسند كل مستخدم عشوائياً إلى A أو B باحتمال 50% لكل منهما (`numpy.random.choice`).
-- **المقياس الرئيسي:** معدل التحويل، أي نسبة المستخدمين الذين أتموا الاشتراك المدفوع.
-- **مقاييس الحماية:** متوسط الإيراد لكل مستخدم (ARPU) بالريال، ونسبة الإلغاء الفوري.
-- **مستوى الدلالة والقوة:** α = 5% (ثنائي الذيل) وقوة إحصائية 80%.
-- **أصغر أثر قابل للاكتشاف (MDE):** زيادة 1 نقطة مئوية (من 5% إلى 6%).
-- **طريقة حساب حجم العينة:** صيغة اختبار الفرق بين نسبتين:
+## Design
+- **Target Population:** Pricing page visitors.
+- **Randomization Unit:** User (User ID or cookies).
+- **Groups:** A (Control, without free trial) and B (Treatment, with free trial).
+- **Allocation Ratio and Implementation:** 50/50; each user is randomly assigned to A or B with a 50% probability for each (`numpy.random.choice`).
+- **Primary Metric:** Conversion rate, i.e., the percentage of users who completed a paid subscription.
+- **Guardrail Metrics:** Average Revenue Per User (ARPU) in SAR, and immediate cancellation rate.
+- **Significance Level and Power:** α = 5% (two-tailed) and 80% statistical power.
+- **Minimum Detectable Effect (MDE):** A 1 percentage point increase (from 5% to 6%).
+- **Sample Size Calculation:** Two-proportion difference test formula:
   n = (z₁₋α/₂ + z₁₋β)² × [p₁(1−p₁) + p₂(1−p₂)] / (p₂−p₁)²
-  والنتيجة **8,155 مستخدماً لكل مجموعة**.
-- **المدة:** مع متوسط 2,000 مستخدم يومياً، تلزم 8.2 أيام تقريباً، وقُرّبت إلى **14 يوماً** (أسبوعان كاملان لتغطية دورة الأسبوع). وهذا يعطي 28,000 مستخدم، أي أكثر من الحد الأدنى المطلوب.
+  Result: **8,155 users per group**.
+- **Duration:** With an average of 2,000 daily users, approximately 8.2 days are required, rounded up to **14 days** (two full weeks to cover the weekly cycle). This yields 28,000 users, which is above the minimum required.
 
-## البيانات وفحوص الجودة
-- البيانات **محاكاة برمجية** (Simulation) بـ `seed = 2026`، وليست بيانات حقيقية. تُحفظ في `data/dataset.csv` (28,000 سجل).
-- الأعمدة: `user_id` و`group` و`converted` و`revenue` و`cancelled`.
-- **افتراضات المحاكاة:** معدل التحويل الحقيقي 5.0% للمجموعة A و6.2% للمجموعة B (أثر حقيقي 1.2 نقطة)، والإيراد للمشتركين من توزيع طبيعي (متوسط 100 وانحراف 20 ريالاً)، واحتمال الإلغاء 2.0% للمجموعة A و2.1% للمجموعة B.
-- **فحوص الجودة (ينفذها `main.py` تلقائياً):** لا قيم مفقودة، ولا سجلات مكررة في `user_id`، وعدد السجلات يطابق المتوقع (28,000)، وفحص اختلال نسبة التوزيع (SRM) باختبار مربع كاي.
+## Data and Quality Checks
+- The data is **programmatically simulated** (Simulation) with `seed = 2026`, and is not real data. It is saved in `data/dataset.csv` (28,000 records).
+- Columns: `user_id`, `group`, `converted`, `revenue`, and `cancelled`.
+- **Simulation Assumptions:** True conversion rate of 5.0% for Group A and 6.2% for Group B (true effect of 1.2 percentage points); subscriber revenue from a normal distribution (mean 100 and standard deviation 20 SAR); cancellation probability of 2.0% for Group A and 2.1% for Group B.
+- **Quality Checks (executed automatically by `main.py`):** No missing values, no duplicate records in `user_id`, record count matches expected (28,000), and Sample Ratio Mismatch (SRM) check using a chi-square test.
 
-## المنهجية
-- **المقياس الرئيسي ونسبة الإلغاء:** اختبار z للفرق بين نسبتين، لأن العينة كبيرة (آلاف المستخدمين) والمقياس ثنائي (0/1).
-- **الإيراد لكل مستخدم:** اختبار z للفرق بين متوسطين.
-- **السبب:** التوزيع العشوائي يسمح بالمقارنة المباشرة بين المجموعتين دون نماذج إضافية.
-- فترات ثقة 95% وقيم p ثنائية الذيل لجميع المقاييس.
+## Methodology
+- **Primary Metric and Cancellation Rate:** Two-proportion z-test, because the sample size is large (thousands of users) and the metric is binary (0/1).
+- **Revenue Per User:** Two-sample z-test for the difference between means.
+- **Rationale:** Random assignment allows direct comparison between the two groups without additional models.
+- 95% confidence intervals and two-tailed p-values for all metrics.
 
-## النتائج
-**فحص SRM:** التوزيع سليم (المجموعة A: 13,944 | المجموعة B: 14,056 | p = 0.5033).
+## Results
+**SRM Check:** Allocation is valid (Group A: 13,944 | Group B: 14,056 | p = 0.5033).
 
-**المقياس الرئيسي (معدل التحويل):**
+**Primary Metric (Conversion Rate):**
 
-| المجموعة | معدل التحويل |
+| Group | Conversion Rate |
 |---|---|
-| A (مقارنة) | 5.17% |
-| B (معالجة) | 6.05% |
+| A (Control) | 5.17% |
+| B (Treatment) | 6.05% |
 
-الفرق **+0.88 نقطة مئوية**، فترة الثقة 95%: [0.34%, 1.42%]، p = 0.0013. الأثر إيجابي ودال إحصائياً.
+The difference is **+0.88 percentage points**, 95% confidence interval: [0.34%, 1.42%], p = 0.0013. The effect is positive and statistically significant.
 
-**مقاييس الحماية:**
+**Guardrail Metrics:**
 
-| المقياس | الفرق | فترة الثقة 95% | قيمة p | الحالة |
+| Metric | Difference | 95% CI | p-value | Status |
 |---|---|---|---|---|
-| الإيراد لكل مستخدم | +0.80 ريال | [0.25, 1.35] | 0.0042 | سليم (تحسّن) |
-| نسبة الإلغاء الفوري | +0.01 نقطة مئوية | [-0.07%, 0.09%] | 0.7490 | سليم (لا دليل على ضرر) |
+| Revenue Per User | +0.80 SAR | [0.25, 1.35] | 0.0042 | Healthy (Improved) |
+| Immediate Cancellation Rate | +0.01 percentage points | [-0.07%, 0.09%] | 0.7490 | Healthy (No evidence of harm) |
 
-**الأهمية الإحصائية والتجارية:**
-- **إحصائياً:** الأثر دال عند مستوى 5%. الأثر المقدَّر (0.88 نقطة) أقل قليلاً من الـ MDE المصمَّم عليه (1 نقطة)، وفترة الثقة واسعة نسبياً (0.34 إلى 1.42)، فحجم الأثر الحقيقي غير محدد بدقة.
-- **تجارياً:** زيادة معدل التحويل تعني نمواً مباشراً في عدد المشتركين، وزيادة الإيراد لكل مستخدم بنحو 0.80 ريال تدل على أن النمو لم يأتِ على حساب قيمة الاشتراك. ولا يوجد دليل على ارتفاع الإلغاء.
+**Statistical and Business Significance:**
+- **Statistically:** The effect is significant at the 5% level. The estimated effect (0.88 percentage points) is slightly below the designed MDE (1 percentage point), and the confidence interval is relatively wide (0.34 to 1.42), so the true effect size is not precisely determined.
+- **Business-wise:** Increasing the conversion rate means direct growth in the number of subscribers, and the ~0.80 SAR increase in revenue per user indicates that growth did not come at the expense of subscription value. There is no evidence of an increase in cancellations.
 
-## التوصية النهائية
-**إطلاق** خيار التجربة المجانية لجميع المستخدمين، لأنه رفع معدل التحويل والإيراد لكل مستخدم بدلالة إحصائية دون دليل على ضرر في مقاييس الحماية. ويُنصح بمتابعة نسبة الإلغاء بعد الإطلاق، لأن الإلغاء في هذه المحاكاة مبسّط.
+## Final Recommendation
+**Launch** the free trial option to all users, because it increased both the conversion rate and revenue per user with statistical significance without evidence of harm to guardrail metrics. It is recommended to monitor the cancellation rate post-launch, as cancellation in this simulation is simplified.
 
-## القيود والافتراضات
-- **البيانات مُحاكاة:** النتائج لغرض التدريب ولا تعكس سلوك مستخدمين حقيقيين.
-- **الأثر المحاكى والـ MDE:** الأثر الحقيقي المفترض في المحاكاة (1.2 نقطة) أكبر قليلاً من الـ MDE (1 نقطة)، بينما الأثر المقدَّر في هذه العينة 0.88 نقطة بسبب التباين العشوائي.
-- **تبسيط الإلغاء:** الإلغاء الفوري افتُرض كاحتمال ثابت، ولم يُتتبَّع السلوك الفعلي على مدار 7 أيام التجربة.
-- **توزيع الإيراد:** افترضت المحاكاة أن المشتركين في المجموعتين لهم نفس توزيع الإيراد، بينما قد يختار مستخدمو التجربة المجانية باقات مختلفة في الواقع. لذلك فزيادة الإيراد لكل مستخدم ناتجة عن زيادة التحويل فقط.
-- **عدم الدلالة لا يعني التكافؤ:** عدم وجود فرق دال في الإلغاء يعني عدم وجود دليل على ضرر، وليس إثباتاً لتساوي المجموعتين.
+## Limitations and Assumptions
+- **Simulated Data:** Results are for training purposes and do not reflect real user behavior.
+- **Simulated Effect and MDE:** The true effect assumed in the simulation (1.2 percentage points) is slightly larger than the MDE (1 percentage point), while the estimated effect in this sample is 0.88 percentage points due to random variation.
+- **Simplified Cancellation:** Immediate cancellation was assumed as a fixed probability, and actual behavior was not tracked over the 7-day trial period.
+- **Revenue Distribution:** The simulation assumed that subscribers in both groups have the same revenue distribution, whereas free trial users might choose different plans in reality. Therefore, the increase in revenue per user is solely due to higher conversion.
+- **Non-Significance Does Not Mean Equivalence:** The lack of a significant difference in cancellations means there is no evidence of harm, not proof that the two groups are equal.
 
-## طريقة التشغيل
-من الطرفية (Terminal):
+## How to Run
+From the terminal:
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
 
-سيُنشئ السكربت المجلدات تلقائياً، ويحفظ البيانات المولدة في `data/dataset.csv`، والرسوم البيانية في `outputs/charts/`، والنتائج النصية في `outputs/results/`.
+The script will automatically create the directories, save the generated data in `data/dataset.csv`, the charts in `outputs/charts/`, and the text results in `outputs/results/`.
 
-## هيكل المستودع
+## Repository Structure
 ```
 Athkax_program/
 ├── README.md
-├── main.py                  # السكربت الرئيسي: توليد البيانات والفحوص والتحليل والرسوم
+├── main.py                  # Main script: data generation, checks, analysis, and charts
 ├── requirements.txt         # numpy, pandas, scipy, matplotlib
 ├── data/
-│   └── dataset.csv          # بيانات المحاكاة
+│   └── dataset.csv          # Simulated data
 └── outputs/
     ├── charts/
     │   ├── conversion_rates.png
@@ -100,6 +100,6 @@ Athkax_program/
         └── analysis_summary.txt
 ```
 
-## عن البرنامج
-نُفّذ هذا المشروع ضمن برنامج «التجارب واختبارات A/B والاستدلال السببي» في أكاديمية سدايا، نوفمبر 2026.
-حساب أكاديمية سدايا على GitHub: https://github.com/SDAIAAcademy
+## About the Program
+This project was completed as part of the "Experiments, A/B Testing, and Causal Inference" program at SDAIA Academy, November 2026.
+SDAIA Academy GitHub: https://github.com/SDAIAAcademy
